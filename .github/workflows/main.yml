@@ -15,7 +15,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # إضافة خطوة للتحقق من وجود الملف قبل محاولة تنفيذ chmod
       - name: Build with Gradle
         run: |
           if [ -f "./gradlew" ]; then
@@ -25,13 +24,13 @@ jobs:
             chmod +x ./app/gradlew
             ./app/gradlew assembleDebug
           else
-            echo "Gradle wrapper not found!"
+            echo "Gradle wrapper not found! Please check your file structure."
             exit 1
           fi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: WolfTrader
+          name: WolfTrader-APK
           path: |
             **/build/outputs/apk/debug/*.apk
