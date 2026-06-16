@@ -17,20 +17,12 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          if [ -f "./gradlew" ]; then
-            chmod +x gradlew
-            ./gradlew assembleDebug
-          elif [ -f "./app/gradlew" ]; then
-            chmod +x ./app/gradlew
-            ./app/gradlew assembleDebug
-          else
-            echo "Gradle wrapper not found! Please check your file structure."
-            exit 1
-          fi
+          gradle assembleDebug || ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: WolfTrader-APK
+          name: WolfTrader
           path: |
             **/build/outputs/apk/debug/*.apk
+            **/app/build/outputs/apk/debug/*.apk
