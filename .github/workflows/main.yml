@@ -15,21 +15,23 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # التأكد من وجود الملف ثم إعطاؤه الصلاحية
-      - name: Grant execute permission
-        run: |
-          if [ -f "gradlew" ]; then
-            chmod +x gradlew
-          else
-            echo "gradlew not found in root, skipping chmod"
-          fi
-
-      # بناء التطبيق
+      # إضافة خطوة للتحقق من وجود الملف قبل محاولة تنفيذ chmod
       - name: Build with Gradle
-        run: ./gradlew :app:assembleDebug
+        run: |
+          if [ -f "./gradlew" ]; then
+            chmod +x gradlew
+            ./gradlew assembleDebug
+          elif [ -f "./app/gradlew" ]; then
+            chmod +x ./app/gradlew
+            ./app/gradlew assembleDebug
+          else
+            echo "Gradle wrapper not found!"
+            exit 1
+          fi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: WolfTrader
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: |
+            **/build/outputs/apk/debug/*.apk
