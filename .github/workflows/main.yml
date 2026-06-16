@@ -15,10 +15,16 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # هذه الخطوة مهمة لضمان عمل ملف الـ Gradle
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      # التأكد من وجود الملف ثم إعطاؤه الصلاحية
+      - name: Grant execute permission
+        run: |
+          if [ -f "gradlew" ]; then
+            chmod +x gradlew
+          else
+            echo "gradlew not found in root, skipping chmod"
+          fi
 
+      # بناء التطبيق
       - name: Build with Gradle
         run: ./gradlew :app:assembleDebug
 
