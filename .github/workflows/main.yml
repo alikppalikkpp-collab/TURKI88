@@ -15,11 +15,19 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
+      # هذا الأمر يبحث عن gradlew في المجلد الرئيسي أو داخل مجلد app ويقوم بتنفيذه
       - name: Build with Gradle
-        run: ./gradlew :app:assembleDebug
+        run: |
+          if [ -f "./gradlew" ]; then
+            chmod +x ./gradlew
+            ./gradlew :app:assembleDebug
+          elif [ -f "./app/gradlew" ]; then
+            chmod +x ./app/gradlew
+            ./app/gradlew :app:assembleDebug
+          else
+            echo "Error: gradlew file not found. Please ensure it is uploaded."
+            exit 1
+          fi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
